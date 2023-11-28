@@ -32,12 +32,19 @@ public class Polynomial {
     @Override
     public String toString() {
 
-        StringBuilder sb = new StringBuilder();
+        String s = "";
 
         for (int i = numberOfCoefficients - 1; i >= 0; i--) {
-            sb.append(coefficientArray[i] + " x^" + i + " ");
+            double currentValue = coefficientArray[i];
+            if (currentValue != 0) {
+                if (i == numberOfCoefficients - 1) {
+                    s += (currentValue > 0 ? "" : "- ");
+                } else {
+                    s += (currentValue > 0 ? "+ " : "- ");
+                }
+                s += (Math.abs(currentValue) + " x^" + i + " ");
+            }
         }
-        String s = sb.toString();
         return s;
     }
 
@@ -50,8 +57,19 @@ public class Polynomial {
     }
 
     public int findRoot(double lower, double upper) {
-
-        return 0;
+        double upperValue = this.getValue(upper);
+        double lowerValue = this.getValue(lower);
+        if (lower == 0 && upperValue == 0) {
+            return 2;
+        } else if (lowerValue == 0) {
+            return -1;
+        } else if (upperValue == 0) {
+            return 1;
+        } else if (lowerValue * upperValue < 0) {
+            return 0;
+        } else {
+            return 2;
+        }
     }
 
 
