@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 
+/**
+ *
+ */
 public class Polynomial {
 
     private double[] coefficientArray;
@@ -60,15 +63,15 @@ public class Polynomial {
         double upperValue = this.getValue(upper);
         double lowerValue = this.getValue(lower);
         if (lower == 0 && upperValue == 0) {
-            return 2;
+            return 2; //roots at both upper and lower bound
         } else if (lowerValue == 0) {
-            return -1;
+            return -1; //root at lower bound
         } else if (upperValue == 0) {
-            return 1;
+            return 1; //root at upper bound
         } else if (lowerValue * upperValue < 0) {
-            return 0;
+            return 0; //root between lower and upper bound
         } else {
-            return 2;
+            return -2;  //root not found between bounds
         }
     }
 
