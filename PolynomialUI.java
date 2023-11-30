@@ -43,7 +43,6 @@ public class PolynomialUI {
             printPolynomial();
 
         do {
-
             wantsToRedefine = false;
             choice = " ";
             setRange();
@@ -76,15 +75,12 @@ public class PolynomialUI {
         String line;
 
         while (!(line = input.nextLine()).isEmpty()) {
-
             try {
                 this.p.addCoefficient(Double.parseDouble(line));
             } catch(Exception ex) {
                 System.out.println("Invalid input, please try again.");
             }
-
         }
-
         input.close();
     }
 
