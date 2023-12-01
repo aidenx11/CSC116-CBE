@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -10,7 +8,7 @@ import java.util.Scanner;
 public class PolynomialUI {
 
     /** Polynomial to keep track of the user's polynomial throughout the program */
-    private Polynomial p = new Polynomial();
+    private final Polynomial p = new Polynomial();
 
     /** Lower bound for p to be evaluated from, set by user in setRange() */
     private double lowerBound = 0;
@@ -43,9 +41,7 @@ public class PolynomialUI {
      */
     public void runPolynomial() {
 
-        //Define variables for use in later loops
-        boolean wantsToRedefine = false;
-        String choice = " ";
+        String choice;
 
         Scanner input = new Scanner(System.in);
 
@@ -56,26 +52,24 @@ public class PolynomialUI {
         //Loop to reset the range and reprint the table if the user decides to
         do {
 
-            wantsToRedefine = false;
-            choice = " ";
             setRange();
             printTable();
 
             //Loop to check if user would like to redefine the table
-            while (!choice.equals("Y")) {
+            do {
                 System.out.println("Would you like to redefine your table? (Y/N)");
                 choice = input.next();
 
-                if (choice.equals("Y")) {
-                    wantsToRedefine = true;
-                } else if (choice.equals("N")) {
+               if (choice.equals("N")) {
                     System.out.println("Exiting Program...");
                     System.exit(0);
-                } else {
+               } else if (!choice.equals("Y")){
                     System.out.println("Invalid input. Please enter only \"Y\" or \"N\" ");
-                }
-            } // interior while loop
-        } while (wantsToRedefine); //exterior do-while loop
+               }
+
+            } while (!choice.equals("Y")); // interior do-while loop
+
+        } while (true); //exterior do-while loop
     }
 
     /**
@@ -119,7 +113,7 @@ public class PolynomialUI {
         this.lowerBound = 0;
         this.upperBound = 0;
         this.numberOfIntervals = 0;
-        boolean validInput = false;
+        boolean validInput;
         boolean validBounds = false;
 
         Scanner input = new Scanner(System.in);
@@ -197,15 +191,16 @@ public class PolynomialUI {
         System.out.printf("%10s", "p(index)");
         System.out.printf("%13s %n",  "diff(index)");
 
-        //Determine where roots are located
-        int locationOfRoots = p.findRoot(lowerBound, upperBound);
+        //Determine if p has roots between the bounds
+        boolean hasRoots = (p.findRoot(lowerBound, upperBound) != -2);
         double interval = (upperBound - lowerBound) / numberOfIntervals;
 
-        //Print the rest of the table, including root locations
+        //Print the rest of the table, including root locations if there are any
         for (double currentInterval = lowerBound; currentInterval <= upperBound; currentInterval += interval) {
 
             double nextInterval = currentInterval + interval;
             double previousInterval = currentInterval - interval;
+            int locationOfRoots = p.findRoot(currentInterval, nextInterval);
 
             //Prints line of values
             System.out.printf("%8.3f", currentInterval);
@@ -213,47 +208,38 @@ public class PolynomialUI {
             System.out.printf("%10.3f", (p.getValue(currentInterval) - p.getValue(previousInterval)));
             System.out.println();
 
-            //Prints location of a root
-            switch (locationOfRoots) {
+            //Prints locations of roots if there are any
+            if (hasRoots) {
+                switch (locationOfRoots) {
 
-                case -1: //root only found at lower bound
-                    if (currentInterval == lowerBound) {
-                        System.out.println("Root found at " + currentInterval);
-                    }
-                    break;
-
-                case 1: //root only found at upper bound
-                    if (currentInterval == upperBound) {
-                        System.out.println("Root found at " + currentInterval);
-                    }
-                    break;
-
-                case 0: //root found between two bounds
-                    if (p.findRoot(currentInterval, nextInterval) == 0) {
-                        System.out.print("Root found between ");
+                    case -1: //root only found at lower bound
+                        System.out.print("Root found at ");
                         System.out.printf("%.3f", currentInterval);
-                        System.out.print(" and ");
-                        System.out.printf("%.3f", nextInterval);
                         System.out.println();
-                    }
-                    break;
+                        break;
 
-                case 2: //root at upper and lower bound
-                    if (currentInterval == lowerBound) {
-                        System.out.println("Root found at " + currentInterval);
-                    }
-                    if (currentInterval == upperBound) {
-                        System.out.println("Root found at " + currentInterval);
-                    }
-                    break;
+                    //case 1 not needed, case -1 takes care of it
 
-                case -2: //no roots found between bounds
-                    if (currentInterval == upperBound) {
-                        System.out.println("No roots were found between the given bounds.");
-                    }
-                    break;
+                    case 0: //root found between two bounds
+                        if (p.findRoot(currentInterval, nextInterval) == 0) {
+                            System.out.print("Root found between ");
+                            System.out.printf("%.3f", currentInterval);
+                            System.out.print(" and ");
+                            System.out.printf("%.3f", nextInterval);
+                            System.out.println();
+                        }
+                        break;
 
-            } // switch
+                    //case 2 not needed, case 0 takes care of it
+
+                }// switch
+            }// if
         } // for
+
+        //prints at end of table if no roots were found in the interval
+        if (!hasRoots) {
+            System.out.println("No roots were found between the given bounds.");
+        }
+
     }  // printTable() method
 } // PolynomialUI class

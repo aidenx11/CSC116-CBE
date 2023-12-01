@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Polynomial {
 
     /** Stores all coefficients of the instance of Polynomial */
-    private double[] coefficientArray;
+    private final double[] coefficientArray;
 
     /** Stores the number of coefficients in the coefficient array */
     private int numberOfCoefficients;
@@ -29,7 +29,7 @@ public class Polynomial {
      * Adds the given coefficient to the coefficient array.
      * If adding the coefficient would cause an indexOutOfBounds exception,
      * does not add coefficient and displays an error message.
-     * @param coefficient
+     * @param coefficient the coefficient to be added to the polynomial
      */
     public void addCoefficient(double coefficient) {
 
@@ -49,6 +49,7 @@ public class Polynomial {
      * (I was unsure if I was supposed to have it return a copy of the array or the reference,
      * but I decided to stick with the reference.)
      * @return the current coefficient array
+     * NOTE: This is never used in my program, but I am unsure if I was supposed to somewhere
      */
     public double[] getPolynomial() {
         return coefficientArray;
@@ -104,8 +105,10 @@ public class Polynomial {
      * 2: there are roots at both the upper and lower bound
      */
     public int findRoot(double lower, double upper) {
+
         double upperValue = this.getValue(upper);
         double lowerValue = this.getValue(lower);
+
         if (lowerValue == 0 && upperValue == 0) {
             return 2; //roots at both upper and lower bound
         } else if (lowerValue == 0) {
