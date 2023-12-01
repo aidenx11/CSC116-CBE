@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -103,37 +104,60 @@ public class PolynomialUI {
         this.upperBound = 0;
         this.numberOfIntervals = 0;
         boolean validInput = false;
+        boolean validBounds = false;
 
         Scanner input = new Scanner(System.in);
+        System.out.println("Type in the range: ");
 
-        while (!validInput) {
-            try {
-                System.out.println("Type in the range: ");
+        while (!validBounds) {
+
+            validInput = false;
+            while (!validInput) {
+
                 System.out.print("Lower Bound (double): ");
-                lowerBound = input.nextDouble();
+                if (input.hasNextDouble()) {
+                    lowerBound = input.nextDouble();
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid input. Please try again.");
+                }
+            }
+
+            validInput = false;
+            while (!validInput) {
 
                 System.out.print("Upper bound (double): ");
-                upperBound = input.nextDouble();
-                if (lowerBound > upperBound) {
-                    throw new Exception();
+                if (input.hasNextDouble()) {
+                    upperBound = input.nextDouble();
+                    validInput = true;
+                } else {
+                    System.out.println("Invalid input. Please try again.");
                 }
+            }
+
+            if (upperBound > lowerBound) {
+                validBounds = true;
+            } else {
+                System.out.println("Invalid Bounds. Ensure that your lower bound is not higher than the upper bound.");
+            }
+        }
+
+        validInput = false;
+        while (!validInput) {
 
                 System.out.print("Number of Intervals (int): ");
-                numberOfIntervals = input.nextInt();
-                if (numberOfIntervals <= 0) {
-                    throw new Exception();
+                if (input.hasNextInt()) {
+                    numberOfIntervals = input.nextInt();
+                    if (numberOfIntervals > 0) {
+                        validInput = true;
+                    } else {
+                        System.out.println("Invalid input. Please try again.");
+                    }
+                } else {
+                    System.out.println("Invalid input. Please try again.");
                 }
-
-                validInput = true;
-
-            } catch (Exception ex) {
-
-                System.out.println("Invalid input, please try again. ");
-                input.nextLine();
-
-            } // try-catch
-        } // while loop
-    } // setRange() method
+        }
+    }
 
     /**
      * Prints a table of all index values along with their p(x) values from the polynomial,
