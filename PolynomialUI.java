@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 /**
  * The PolynomialUI class runs the polynomial application. Uses the Polynomial class.
  * Contains the main method.
@@ -61,7 +62,6 @@ public class PolynomialUI {
                 } // if-else chain
             } // interior while loop
         } while (wantsToRedefine);
-        input.close();
     }
 
     /**
@@ -84,8 +84,6 @@ public class PolynomialUI {
             }
 
         }
-
-        input.close();
     }
 
     /**
@@ -110,16 +108,21 @@ public class PolynomialUI {
 
         while (!validInput) {
             try {
-                System.out.print("Type in the range: \nLower Bound (double): ");
+                System.out.println("Type in the range: ");
+                System.out.print("Lower Bound (double): ");
                 lowerBound = input.nextDouble();
 
                 System.out.print("Upper bound (double): ");
                 upperBound = input.nextDouble();
-                if (lowerBound > upperBound) throw new Exception();
+                if (lowerBound > upperBound) {
+                    throw new Exception();
+                }
 
                 System.out.print("Number of Intervals (int): ");
                 numberOfIntervals = input.nextInt();
-                if (numberOfIntervals <= 0) throw new Exception();
+                if (numberOfIntervals <= 0) {
+                    throw new Exception();
+                }
 
                 validInput = true;
 
@@ -127,6 +130,7 @@ public class PolynomialUI {
 
                 System.out.println("Invalid input, please try again. ");
                 input.nextLine();
+
             } // try-catch
         } // while loop
     } // setRange() method
