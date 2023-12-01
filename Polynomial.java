@@ -33,12 +33,13 @@ public class Polynomial {
      */
     public void addCoefficient(double coefficient) {
 
-        if (numberOfCoefficients < coefficientArray.length + 1) {
+        if (numberOfCoefficients < coefficientArray.length) {
             coefficientArray[indexOfNextSpot] = coefficient;
             indexOfNextSpot++;
             numberOfCoefficients++;
         } else {
-            System.out.println("Maximum number of coefficients (" + coefficientArray.length + ") reached. " + coefficient + " was not added.");
+            System.out.println("Maximum number of coefficients (" + coefficientArray.length + ") reached. "
+                    + coefficient + " was not added.");
         }
 
     }
@@ -66,7 +67,7 @@ public class Polynomial {
         for (int i = numberOfCoefficients - 1; i >= 0; i--) {
             double currentValue = coefficientArray[i];
             if (currentValue != 0) {
-                if (i == numberOfCoefficients - 1) {
+                if (coefficientArray[i + 1] == 0) {
                     s += (currentValue > 0 ? "" : "- ");
                 } else {
                     s += (currentValue > 0 ? "+ " : "- ");
@@ -105,7 +106,7 @@ public class Polynomial {
     public int findRoot(double lower, double upper) {
         double upperValue = this.getValue(upper);
         double lowerValue = this.getValue(lower);
-        if (lower == 0 && upperValue == 0) {
+        if (lowerValue == 0 && upperValue == 0) {
             return 2; //roots at both upper and lower bound
         } else if (lowerValue == 0) {
             return -1; //root at lower bound

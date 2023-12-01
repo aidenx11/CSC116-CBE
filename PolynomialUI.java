@@ -9,9 +9,16 @@ import java.util.Scanner;
  */
 public class PolynomialUI {
 
+    /** Polynomial to keep track of the user's polynomial throughout the program */
     private Polynomial p = new Polynomial();
+
+    /** Lower bound for p to be evaluated from, set by user in setRange() */
     private double lowerBound = 0;
+
+    /** Upper bound for p to be evaluated to, set by user in setRange() */
     private double upperBound = 0;
+
+    /** The number of intervals in the range, set by user in setRange() */
     private int numberOfIntervals = 0;
 
     /**
@@ -36,23 +43,29 @@ public class PolynomialUI {
      */
     public void runPolynomial() {
 
+        //Define variables for use in later loops
         boolean wantsToRedefine = false;
         String choice = " ";
 
         Scanner input = new Scanner(System.in);
 
+        //Have user set their polynomial and print it to them
             setPolynomial();
             printPolynomial();
 
+        //Loop to reset the range and reprint the table if the user decides to
         do {
 
             wantsToRedefine = false;
             choice = " ";
             setRange();
             printTable();
-            while (!choice.equals("Y") && !choice.equals("N")) {
+
+            //Loop to check if user would like to redefine the table
+            while (!choice.equals("Y")) {
                 System.out.println("Would you like to redefine your table? (Y/N)");
                 choice = input.next();
+
                 if (choice.equals("Y")) {
                     wantsToRedefine = true;
                 } else if (choice.equals("N")) {
@@ -60,9 +73,9 @@ public class PolynomialUI {
                     System.exit(0);
                 } else {
                     System.out.println("Invalid input. Please enter only \"Y\" or \"N\" ");
-                } // if-else chain
+                }
             } // interior while loop
-        } while (wantsToRedefine);
+        } while (wantsToRedefine); //exterior do-while loop
     }
 
     /**
@@ -76,19 +89,21 @@ public class PolynomialUI {
         System.out.println("Type in the polynomials in increasing powers:");
         String line;
 
-        while (!(line = input.nextLine()).isEmpty()) {
+        //Adds coefficients as long as the next line is not empty
 
-            try {
-                this.p.addCoefficient(Double.parseDouble(line));
-            } catch(Exception ex) {
-                System.out.println("Invalid input, please try again.");
+            while (!(line = input.nextLine()).isEmpty()) {
+
+                try {
+                    this.p.addCoefficient(Double.parseDouble(line));
+                } catch(NumberFormatException ex) {
+                    System.out.println("Invalid input, please try again.");
+                }
             }
-
-        }
     }
 
     /**
-     * Prints the current polynomial to system out using the Polynomial class's toString() method.
+     * Prints the current polynomial to system out
+     * using the Polynomial class's toString() method.
      */
     public void printPolynomial() {
         System.out.println(this.p.toString());
@@ -100,6 +115,7 @@ public class PolynomialUI {
      */
     public void setRange() {
 
+        //Set bounds to zero in case setRange() is used to redefine bounds
         this.lowerBound = 0;
         this.upperBound = 0;
         this.numberOfIntervals = 0;
@@ -109,9 +125,11 @@ public class PolynomialUI {
         Scanner input = new Scanner(System.in);
         System.out.println("Type in the range: ");
 
+        //Loop to verify the bounds are valid (lower < upper)
         while (!validBounds) {
 
             validInput = false;
+            //Loop to verify user enters a double value
             while (!validInput) {
 
                 System.out.print("Lower Bound (double): ");
@@ -124,6 +142,7 @@ public class PolynomialUI {
             }
 
             validInput = false;
+            //Loop to verify user enters a double value
             while (!validInput) {
 
                 System.out.print("Upper bound (double): ");
@@ -135,6 +154,7 @@ public class PolynomialUI {
                 }
             }
 
+            //Checks if bounds are valid, allows loop to exit if so
             if (upperBound > lowerBound) {
                 validBounds = true;
             } else {
@@ -143,9 +163,12 @@ public class PolynomialUI {
         }
 
         validInput = false;
+        //Loop to verify user enters an integer value
         while (!validInput) {
 
                 System.out.print("Number of Intervals (int): ");
+
+                //Outer if statement verifies integer, nested if verifies that interval > 0
                 if (input.hasNextInt()) {
                     numberOfIntervals = input.nextInt();
                     if (numberOfIntervals > 0) {
@@ -162,7 +185,6 @@ public class PolynomialUI {
     /**
      * Prints a table of all index values along with their p(x) values from the polynomial,
      * and the difference between the previous p(x) and the current one.
-     *
      * Determines location of roots using the Polynomial class's findRoot() method with the
      * user given lower and upper bound.
      * Uses a switch statement to determine where to print the location of the root to system out.
@@ -170,40 +192,44 @@ public class PolynomialUI {
      */
     public void printTable() {
 
+        //Print table header
         System.out.printf("%8s", "index");
         System.out.printf("%10s", "p(index)");
         System.out.printf("%13s %n",  "diff(index)");
 
+        //Determine where roots are located
         int locationOfRoots = p.findRoot(lowerBound, upperBound);
-
         double interval = (upperBound - lowerBound) / numberOfIntervals;
 
+        //Print the rest of the table, including root locations
         for (double currentInterval = lowerBound; currentInterval <= upperBound; currentInterval += interval) {
 
             double nextInterval = currentInterval + interval;
             double previousInterval = currentInterval - interval;
 
+            //Prints line of values
             System.out.printf("%8.3f", currentInterval);
             System.out.printf("%10.3f", p.getValue(currentInterval));
             System.out.printf("%10.3f", (p.getValue(currentInterval) - p.getValue(previousInterval)));
             System.out.println();
 
+            //Prints location of a root
             switch (locationOfRoots) {
 
-                case -1:
+                case -1: //root only found at lower bound
                     if (currentInterval == lowerBound) {
                         System.out.println("Root found at " + currentInterval);
                     }
                     break;
 
-                case 1:
+                case 1: //root only found at upper bound
                     if (currentInterval == upperBound) {
                         System.out.println("Root found at " + currentInterval);
                     }
                     break;
 
-                case 0:
-                    if (p.findRoot(currentInterval, currentInterval + interval) == 0) {
+                case 0: //root found between two bounds
+                    if (p.findRoot(currentInterval, nextInterval) == 0) {
                         System.out.print("Root found between ");
                         System.out.printf("%.3f", currentInterval);
                         System.out.print(" and ");
@@ -212,7 +238,7 @@ public class PolynomialUI {
                     }
                     break;
 
-                case 2:
+                case 2: //root at upper and lower bound
                     if (currentInterval == lowerBound) {
                         System.out.println("Root found at " + currentInterval);
                     }
@@ -221,7 +247,7 @@ public class PolynomialUI {
                     }
                     break;
 
-                case -2:
+                case -2: //no roots found between bounds
                     if (currentInterval == upperBound) {
                         System.out.println("No roots were found between the given bounds.");
                     }
