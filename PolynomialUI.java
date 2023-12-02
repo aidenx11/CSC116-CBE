@@ -20,7 +20,7 @@ public class PolynomialUI {
     private int numberOfIntervals = 0;
 
     /**
-     * Main method. Executes the program by creating a new PolynomialUI
+     * Main method. Executes the program by creating a new PolynomialUI.
      * @param args command line arguments
      */
     public static void main(String[] args) {
@@ -191,8 +191,8 @@ public class PolynomialUI {
         System.out.printf("%10s", "p(index)");
         System.out.printf("%13s %n",  "diff(index)");
 
-        //Determine if p has roots between the bounds
-        boolean hasRoots = (p.findRoot(lowerBound, upperBound) != -2);
+        //Initialize hasRoots for later use and determine the interval
+        boolean hasRoots = false;
         double interval = (upperBound - lowerBound) / numberOfIntervals;
 
         //Print the rest of the table, including root locations if there are any
@@ -209,7 +209,8 @@ public class PolynomialUI {
             System.out.println();
 
             //Prints locations of roots if there are any
-            if (hasRoots) {
+            if (locationOfRoots != -2) {
+                hasRoots = true;
                 switch (locationOfRoots) {
 
                     case -1: //root only found at lower bound
